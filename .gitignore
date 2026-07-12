@@ -1,0 +1,24 @@
+# ---- Godot 4 ----
+# Editor & import cache: auto-generated when the project opens. Never commit.
+.godot/
+
+# Legacy Godot 3 import cache (harmless to keep listed)
+.import/
+
+# Export presets (can contain signing secrets) and build output
+export.cfg
+export_presets.cfg
+/build/
+/export/
+
+# Auto-generated translations
+*.translation
+
+# Mono / C# leftovers (unused in a GDScript project)
+.mono/
+data_*/
+mono_crash.*.json
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
