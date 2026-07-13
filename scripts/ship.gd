@@ -8,6 +8,9 @@ var state: State = State.AIMING
 @export var aim_line:MeshInstance3D
 @export var prediction_steps: int = 240
 
+signal crashed(body)
+signal reached_goal(body)
+
 var _aiming: bool = false
 var _launch_velocity: Vector3 = Vector3.ZERO
 
@@ -61,7 +64,7 @@ func _mouse_to_plane(screen_pos: Vector2) -> Vector3:
 	var ground := Plane(Vector3.UP, 0.0)                    # the y = 0 play plane
 	var hit = ground.intersects_ray(from, dir)
 	return hit if hit != null else global_position
-	#
+	
 #func _draw_aim_line() -> void:
 	#var m := aim_line.mesh as ImmediateMesh
 	#m.clear_surfaces()
@@ -77,9 +80,23 @@ func _clear_aim_line() -> void:
 func _physics_process(delta: float) -> void:
 	if state == State.FLYING:
 		super._physics_process(delta)
-# Called when the node enters the scene tree for the first time.
+	_check_collisions()
+
+func _check_collisions():
+	for body in get_tree().get_nodes_in_group("gravity_sources"):
+		if body ==self:
+			continue
+		if global_position.distance_to(body.global_position) <= body.radius:
+			state = State.LANDED
+			if body.is_goal:
+				reached_goal.emit(body)
+			else:
+				crashed.emit(body)
+			return
+		
+
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://3xn713qjb1xx"]
 
 [ext_resource type="PackedScene" uid="uid://dp58dg2wlyjne" path="res://scenes/planet.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://b5q08ha4xy2g7" path="res://scripts/game.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bdf5jlkvwvbe7" path="res://scenes/ship.tscn" id="2_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
@@ -12,6 +13,25 @@ sky_material = SubResource("ProceduralSkyMaterial_rftev")
 background_mode = 2
 sky = SubResource("Sky_abdd0")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+resource_local_to_scene = true
+albedo_color = Color(0.99215686, 0.99607843, 0.972549, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_1bvp3"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_h2yge")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cktii"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_lquwl"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_cktii")
+radius = 1.0
+height = 2.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 shading_mode = 0
 albedo_color = Color(0.23940039, 0.76369256, 0.74620956, 1)
@@ -19,6 +39,7 @@ albedo_color = Color(0.23940039, 0.76369256, 0.74620956, 1)
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_6iixf"]
 
 [node name="Main" type="Node3D" unique_id=1912433870]
+script = ExtResource("1_h2yge")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=165462697]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
@@ -27,21 +48,33 @@ transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.766
 environment = SubResource("Environment_r57db")
 
 [node name="Planet" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
+mesh = SubResource("SphereMesh_1bvp3")
 mass = 1000.0
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1960231580]
-transform = Transform3D(1, 0, 0, 0, 0.7880108, 0.6156615, 0, -0.6156615, 0.7880108, -8.903488, 13.044705, 18.13678)
+transform = Transform3D(1, 0, 0, 0, 0.7880108, 0.6156615, 0, -0.6156615, 0.7880108, -14.478681, 12.2686615, 15.377707)
 
 [node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8243713, 0, 0)
 aim_line = NodePath("../AimLine")
 mass = 0.01
+body_type = 2
 
 [node name="Planet2" parent="." unique_id=810922569 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.939777, 0, 0)
-mass = 10.0
-initial_velocity = Vector3(0, 0, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.89563, 0, 0)
+mesh = SubResource("SphereMesh_lquwl")
+mass = 1000.0
+is_goal = true
 
 [node name="AimLine" type="MeshInstance3D" parent="." unique_id=1866508016]
 material_override = SubResource("StandardMaterial3D_0xm2m")
 mesh = SubResource("ImmediateMesh_6iixf")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=775766423]
+
+[node name="Chaos" type="CheckButton" parent="HUD" unique_id=169077019]
+offset_right = 52.0
+offset_bottom = 48.0
+text = "Full N-Body (Chaos)"
+
+[editable path="Planet2"]
