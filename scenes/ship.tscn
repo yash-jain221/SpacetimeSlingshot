@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bdf5jlkvwvbe7"]
+
+[ext_resource type="Script" uid="uid://yoleb38xfxdo" path="res://ship.gd" id="1_q631a"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_r57db"]
+radius = 0.3
+height = 0.6
+
+[node name="Ship" type="MeshInstance3D" unique_id=1701288930]
+mesh = SubResource("SphereMesh_r57db")
+script = ExtResource("1_q631a")

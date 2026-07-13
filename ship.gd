@@ -1,29 +1,85 @@
-extends MeshInstance3D
-class_name GravityBody
+extends GravityBody
+class_name Ship
 
-const G:float = 1.0
-@export var initial_velocity: Vector3 = Vector3.ZERO
-var velocity: Vector3
+enum State {AIMING, FLYING, LANDED}
+var state: State = State.AIMING
 
+@export var power_scale: float = 3.0
+@export var aim_line:MeshInstance3D
+@export var prediction_steps: int = 240
+
+var _aiming: bool = false
+var _launch_velocity: Vector3 = Vector3.ZERO
+
+func _unhandled_input(event: InputEvent) -> void:
+	if state == State.FLYING:
+		return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_aiming = event.pressed 
+		if event.pressed: _update_aim(event.position)
+		else: _launch()
+	elif event is InputEventMouseMotion and _aiming:
+		_update_aim(event.position)
+
+func _predict_path(start_pos: Vector3, start_vel: Vector3) -> PackedVector3Array:
+	var dt: float = 1.0/Engine.physics_ticks_per_second
+	var points := PackedVector3Array()
+	var pos := start_pos
+	var vel := start_vel
+	
+	for step in prediction_steps:
+		vel += _gravity_at(pos)*dt
+		pos += vel*dt
+		points.append(pos)
+	
+	return points
+
+func _update_aim(screen_pos: Vector2):
+	var target: Vector3 = _mouse_to_plane(screen_pos)
+	_launch_velocity = (self.position - target)*power_scale
+	_draw_path(_predict_path(global_position, _launch_velocity))
+
+func _draw_path(points: PackedVector3Array)->void:
+	var m := aim_line.mesh as ImmediateMesh
+	m.clear_surfaces()
+	if points.size()<2:
+		return
+	m.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
+	for p in points:
+		m.surface_add_vertex(p)
+	m.surface_end()
+	
+func _launch()->void:
+	self.velocity = _launch_velocity
+	state = State.FLYING
+	_clear_aim_line()
+
+func _mouse_to_plane(screen_pos: Vector2) -> Vector3:
+	var cam := get_viewport().get_camera_3d()
+	var from := cam.project_ray_origin(screen_pos)
+	var dir := cam.project_ray_normal(screen_pos)
+	var ground := Plane(Vector3.UP, 0.0)                    # the y = 0 play plane
+	var hit = ground.intersects_ray(from, dir)
+	return hit if hit != null else global_position
+	#
+#func _draw_aim_line() -> void:
+	#var m := aim_line.mesh as ImmediateMesh
+	#m.clear_surfaces()
+	#m.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
+	#m.surface_add_vertex(global_position)
+	#m.surface_add_vertex(global_position + _launch_velocity)   # line length = power
+	#m.surface_end()
+
+func _clear_aim_line() -> void:
+	(aim_line.mesh as ImmediateMesh).clear_surfaces()
+
+		
+func _physics_process(delta: float) -> void:
+	if state == State.FLYING:
+		super._physics_process(delta)
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	velocity = initial_velocity
-
-func _physics_process(delta: float) -> void:
-	var acceleration = _gravity_at(global_position)
-	velocity += acceleration * delta
-	global_position += velocity * delta
-	
-func _gravity_at(point: Vector3)->Vector3:
-	var accelaration := Vector3.ZERO
-	for source in get_tree().get_nodes_in_group("gravity_sources"):
-		var offset = source.global_position - point
-		var dist_sq: float = offset.length_squared()
-		if dist_sq < 0.01:
-			continue
-		accelaration += offset.normalized() * (G * source.mass/dist_sq) 
-	
-	return accelaration
+	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

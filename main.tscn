@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://3xn713qjb1xx"]
 
-[ext_resource type="Script" uid="uid://6qsjo8uj3qry" path="res://attractor.gd" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://dx1nakdubq4p8" path="res://ship.gd" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dp58dg2wlyjne" path="res://scenes/planet.tscn" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bdf5jlkvwvbe7" path="res://scenes/ship.tscn" id="2_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
 
@@ -12,11 +12,11 @@ sky_material = SubResource("ProceduralSkyMaterial_rftev")
 background_mode = 2
 sky = SubResource("Sky_abdd0")
 
-[sub_resource type="SphereMesh" id="SphereMesh_6iixf"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+shading_mode = 0
+albedo_color = Color(0.23940039, 0.76369256, 0.74620956, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_r57db"]
-radius = 0.3
-height = 0.6
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_6iixf"]
 
 [node name="Main" type="Node3D" unique_id=1912433870]
 
@@ -26,15 +26,22 @@ transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.766
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1241039109]
 environment = SubResource("Environment_r57db")
 
-[node name="Star" type="MeshInstance3D" parent="." unique_id=454090719]
-mesh = SubResource("SphereMesh_6iixf")
-script = ExtResource("1_ig7tw")
+[node name="Planet" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
+mass = 1000.0
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1960231580]
-transform = Transform3D(1, 0, 0, 0, 0.7880108, 0.6156615, 0, -0.6156615, 0.7880108, 0, 8, 10)
+transform = Transform3D(1, 0, 0, 0, 0.7880108, 0.6156615, 0, -0.6156615, 0.7880108, -8.903488, 13.044705, 18.13678)
 
-[node name="Ship" type="MeshInstance3D" parent="." unique_id=1673720252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
-mesh = SubResource("SphereMesh_r57db")
-script = ExtResource("2_0xm2m")
-initial_velocity = Vector3(0, 0, 6)
+[node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+aim_line = NodePath("../AimLine")
+mass = 0.01
+
+[node name="Planet2" parent="." unique_id=810922569 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.939777, 0, 0)
+mass = 10.0
+initial_velocity = Vector3(0, 0, -1)
+
+[node name="AimLine" type="MeshInstance3D" parent="." unique_id=1866508016]
+material_override = SubResource("StandardMaterial3D_0xm2m")
+mesh = SubResource("ImmediateMesh_6iixf")

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dp58dg2wlyjne"]
+
+[ext_resource type="Script" uid="uid://dx1nakdubq4p8" path="res://gravity_body.gd" id="1_cktii"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_6iixf"]
+radius = 3.0
+height = 6.0
+
+[node name="Planet" type="MeshInstance3D" unique_id=710599271]
+mesh = SubResource("SphereMesh_6iixf")
+script = ExtResource("1_cktii")
