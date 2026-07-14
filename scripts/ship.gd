@@ -17,6 +17,8 @@ var _launch_velocity: Vector3 = Vector3.ZERO
 func _unhandled_input(event: InputEvent) -> void:
 	if state == State.FLYING:
 		return
+	if state != State.AIMING:
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		_aiming = event.pressed 
 		if event.pressed: _update_aim(event.position)

@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://dp58dg2wlyjne" path="res://scenes/planet.tscn" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://b5q08ha4xy2g7" path="res://scripts/game.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bdf5jlkvwvbe7" path="res://scenes/ship.tscn" id="2_h2yge"]
+[ext_resource type="Shader" uid="uid://du6tsbtyxfjl2" path="res://shaders/spacetime_grid.gdshader" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://cur2lbhpcpqt8" path="res://scripts/spacetime_grid.gd" id="5_lquwl"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
 
@@ -38,6 +40,33 @@ albedo_color = Color(0.23940039, 0.76369256, 0.74620956, 1)
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_6iixf"]
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_6iixf"]
+size = Vector2(200, 200)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
+render_priority = 0
+shader = ExtResource("4_1bvp3")
+shader_parameter/body_count = 0
+shader_parameter/body_positions = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/body_masses = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/well_strength = 0.05
+shader_parameter/well_softening = 1.5
+shader_parameter/max_depth = 15.0
+shader_parameter/grid_color = Color(0.2, 0.5, 1, 1)
+shader_parameter/line_sharpness = 0.04
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
+resource_local_to_scene = true
+albedo_color = Color(0.99215686, 0.99607843, 0.972549, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_5vw27"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_272bh")
+radius = 1.0
+height = 2.0
+
 [node name="Main" type="Node3D" unique_id=1912433870]
 script = ExtResource("1_h2yge")
 
@@ -48,20 +77,21 @@ transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.766
 environment = SubResource("Environment_r57db")
 
 [node name="Planet" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.561649, 0.82444763, 0)
 mesh = SubResource("SphereMesh_1bvp3")
 mass = 1000.0
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1960231580]
-transform = Transform3D(1, 0, 0, 0, 0.7880108, 0.6156615, 0, -0.6156615, 0.7880108, -14.478681, 12.2686615, 15.377707)
+transform = Transform3D(1, 0, 0, 0, 0.7032319, 0.71096057, 0, -0.71096057, 0.7032319, 1.0142708, 14.15086, 12.210488)
 
 [node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8243713, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.641254, 0.4110453, 0)
 aim_line = NodePath("../AimLine")
 mass = 0.01
 body_type = 2
 
 [node name="Planet2" parent="." unique_id=810922569 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.89563, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.405945, 0.97395086, 0)
 mesh = SubResource("SphereMesh_lquwl")
 mass = 1000.0
 is_goal = true
@@ -76,5 +106,28 @@ mesh = SubResource("ImmediateMesh_6iixf")
 offset_right = 52.0
 offset_bottom = 48.0
 text = "Full N-Body (Chaos)"
+
+[node name="Banner" type="Label" parent="HUD" unique_id=1355017339]
+offset_left = 499.0
+offset_top = 258.0
+offset_right = 685.0
+offset_bottom = 329.0
+
+[node name="RetryButton" type="Button" parent="HUD" unique_id=1943831592]
+offset_left = 550.0
+offset_top = 341.0
+offset_right = 638.0
+offset_bottom = 383.0
+text = "Retry?"
+
+[node name="SpacetimeGrid" type="MeshInstance3D" parent="." unique_id=294695057]
+mesh = SubResource("PlaneMesh_6iixf")
+surface_material_override/0 = SubResource("ShaderMaterial_h2yge")
+script = ExtResource("5_lquwl")
+
+[node name="Planet4" parent="." unique_id=388353572 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09715271, 2.473343, -15.797794)
+mesh = SubResource("SphereMesh_5vw27")
+mass = 1000.0
 
 [editable path="Planet2"]
