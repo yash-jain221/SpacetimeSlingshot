@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bdf5jlkvwvbe7" path="res://scenes/ship.tscn" id="2_h2yge"]
 [ext_resource type="Shader" uid="uid://du6tsbtyxfjl2" path="res://shaders/spacetime_grid.gdshader" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://cur2lbhpcpqt8" path="res://scripts/spacetime_grid.gd" id="5_lquwl"]
+[ext_resource type="Shader" uid="uid://csjn53o8iuanc" path="res://shaders/planet.gdshader" id="6_7mycd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
 
@@ -14,25 +15,6 @@ sky_material = SubResource("ProceduralSkyMaterial_rftev")
 [sub_resource type="Environment" id="Environment_r57db"]
 background_mode = 2
 sky = SubResource("Sky_abdd0")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
-resource_local_to_scene = true
-albedo_color = Color(0.99215686, 0.99607843, 0.972549, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_1bvp3"]
-resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_h2yge")
-radius = 1.0
-height = 2.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cktii"]
-albedo_color = Color(0, 1, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_lquwl"]
-resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_cktii")
-radius = 1.0
-height = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 shading_mode = 0
@@ -57,15 +39,82 @@ shader_parameter/max_depth = 15.0
 shader_parameter/grid_color = Color(0.2, 0.5, 1, 1)
 shader_parameter/line_sharpness = 0.04
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
-resource_local_to_scene = true
-albedo_color = Color(0.99215686, 0.99607843, 0.972549, 1)
+[sub_resource type="Gradient" id="Gradient_h8ms6"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_5vw27"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ggt7d"]
+fractal_type = 3
+fractal_octaves = 7
+fractal_weighted_strength = 0.21
+fractal_ping_pong_strength = 4.0
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_h8ms6"]
+noise = SubResource("FastNoiseLite_ggt7d")
+color_ramp = SubResource("Gradient_h8ms6")
+seamless = true
+seamless_blend_skirt = 0.765
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mycd"]
 resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_272bh")
-radius = 1.0
-height = 2.0
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.25
+shader_parameter/seed_offset = Vector3(0, 0, 0)
+shader_parameter/sea_level = 0.5
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_272bh"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_7mycd")
+radius = 3.0
+height = 6.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.1
+shader_parameter/seed_offset = Vector3(0, 1, 2)
+shader_parameter/sea_level = 0.2
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kek77"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_5vw27")
+radius = 3.0
+height = 6.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4c57u"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.25
+shader_parameter/seed_offset = Vector3(2, 5, 2)
+shader_parameter/sea_level = 0.01
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_efxa6"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_4c57u")
+radius = 3.0
+height = 6.0
 
 [node name="Main" type="Node3D" unique_id=1912433870]
 script = ExtResource("1_h2yge")
@@ -76,25 +125,14 @@ transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.766
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1241039109]
 environment = SubResource("Environment_r57db")
 
-[node name="Planet" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.561649, 0.82444763, 0)
-mesh = SubResource("SphereMesh_1bvp3")
-mass = 1000.0
-
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1960231580]
-transform = Transform3D(1, 0, 0, 0, 0.7032319, 0.71096057, 0, -0.71096057, 0.7032319, 1.0142708, 14.15086, 12.210488)
+transform = Transform3D(1, 0, 0, 0, 0.7032319, 0.71096057, 0, -0.71096057, 0.7032319, -5.1645308, 19.360264, 14.040287)
 
 [node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.641254, 0.4110453, 0)
 aim_line = NodePath("../AimLine")
 mass = 0.01
 body_type = 2
-
-[node name="Planet2" parent="." unique_id=810922569 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.405945, 0.97395086, 0)
-mesh = SubResource("SphereMesh_lquwl")
-mass = 1000.0
-is_goal = true
 
 [node name="AimLine" type="MeshInstance3D" parent="." unique_id=1866508016]
 material_override = SubResource("StandardMaterial3D_0xm2m")
@@ -125,9 +163,17 @@ mesh = SubResource("PlaneMesh_6iixf")
 surface_material_override/0 = SubResource("ShaderMaterial_h2yge")
 script = ExtResource("5_lquwl")
 
-[node name="Planet4" parent="." unique_id=388353572 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09715271, 2.473343, -15.797794)
-mesh = SubResource("SphereMesh_5vw27")
-mass = 1000.0
+[node name="Planet3" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(-0.045196407, 0.9382844, 0.34289888, -0.9372581, 0.07895322, -0.3395788, -0.34569445, -0.33673257, 0.8758463, -25.572811, 2.6374502, 0)
+mesh = SubResource("SphereMesh_272bh")
+mass = 500.0
+is_goal = true
 
-[editable path="Planet2"]
+[node name="Planet4" parent="." unique_id=1095530171 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(-0.99591076, -0.08379161, -0.033792675, 0.08575176, -0.75883454, -0.64561486, 0.028454036, -0.64587235, 0.7629161, -6.5692463, 1.8632507, -23.153662)
+mesh = SubResource("SphereMesh_kek77")
+mass = 850.0
+
+[node name="Planet5" parent="." unique_id=235869983 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, 15.722301, 2.585144, -0.7342663)
+mesh = SubResource("SphereMesh_efxa6")

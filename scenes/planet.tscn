@@ -1,17 +1,45 @@
 [gd_scene format=3 uid="uid://dp58dg2wlyjne"]
 
 [ext_resource type="Script" uid="uid://dx1nakdubq4p8" path="res://scripts/gravity_body.gd" id="1_cktii"]
+[ext_resource type="Shader" uid="uid://csjn53o8iuanc" path="res://shaders/planet.gdshader" id="1_h8ms6"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+[sub_resource type="Gradient" id="Gradient_h8ms6"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ggt7d"]
+fractal_type = 3
+fractal_octaves = 7
+fractal_weighted_strength = 0.21
+fractal_ping_pong_strength = 4.0
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_h8ms6"]
+noise = SubResource("FastNoiseLite_ggt7d")
+color_ramp = SubResource("Gradient_h8ms6")
+seamless = true
+seamless_blend_skirt = 0.765
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h8ms6"]
 resource_local_to_scene = true
-albedo_color = Color(0.99215686, 0.99607843, 0.972549, 1)
+render_priority = 0
+shader = ExtResource("1_h8ms6")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 1.5
+shader_parameter/seed_offset = Vector3(0, 0, 0)
+shader_parameter/sea_level = 0.5
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_6iixf"]
 resource_local_to_scene = true
-material = SubResource("StandardMaterial3D_h2yge")
+material = SubResource("ShaderMaterial_h8ms6")
 radius = 3.0
 height = 6.0
 
 [node name="Planet" type="MeshInstance3D" unique_id=710599271]
+transform = Transform3D(-0.045196407, 0.9382844, 0.34289888, -0.9372581, 0.07895322, -0.3395788, -0.34569445, -0.33673257, 0.8758463, 0, 0, 0)
 mesh = SubResource("SphereMesh_6iixf")
 script = ExtResource("1_cktii")
+mass = 1000.0
