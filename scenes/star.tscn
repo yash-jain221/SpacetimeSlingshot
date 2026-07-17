@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://b403kme5i2fb7"]
+
+[ext_resource type="Shader" uid="uid://d4jf040fgso8h" path="res://shaders/star.gdshader" id="1_j6vao"]
+[ext_resource type="Script" uid="uid://dx1nakdubq4p8" path="res://scripts/gravity_body.gd" id="1_mcqwg"]
+
+[sub_resource type="Gradient" id="Gradient_ef0hr"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_j6vao"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_j6vao"]
+noise = SubResource("FastNoiseLite_j6vao")
+color_ramp = SubResource("Gradient_ef0hr")
+seamless = true
+seamless_blend_skirt = 0.548
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lh1ka"]
+render_priority = 0
+shader = ExtResource("1_j6vao")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_j6vao")
+shader_parameter/noise_scale = 2.0
+shader_parameter/churn_speed = 0.05
+shader_parameter/core_color = Vector3(1, 0.95, 0.6)
+shader_parameter/edge_color = Vector3(1, 0.45, 0.1)
+shader_parameter/brightness = 3.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_6iixf"]
+material = SubResource("ShaderMaterial_lh1ka")
+radius = 2.0
+height = 4.0
+
+[node name="Star" type="MeshInstance3D" unique_id=1648864639]
+mesh = SubResource("SphereMesh_6iixf")
+script = ExtResource("1_mcqwg")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=2016726415]
+light_energy = 3.0
+shadow_enabled = true
+omni_range = 120.0

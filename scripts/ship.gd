@@ -12,7 +12,7 @@ signal crashed(body)
 signal reached_goal(body)
 
 var _aiming: bool = false
-var _launch_velocity: Vector3 = Vector3.ZERO
+var _launch_velocity: Vector2 = Vector2.ZERO
 
 func _unhandled_input(event: InputEvent) -> void:
 	if state == State.FLYING:
@@ -26,7 +26,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _aiming:
 		_update_aim(event.position)
 
-func _predict_path(start_pos: Vector3, start_vel: Vector3) -> PackedVector3Array:
+func _predict_path(start_pos: Vector3, start_vel: Vector2) -> PackedVector3Array:
 	var dt: float = 1.0/Engine.physics_ticks_per_second
 	var points := PackedVector3Array()
 	var pos := start_pos
@@ -34,14 +34,15 @@ func _predict_path(start_pos: Vector3, start_vel: Vector3) -> PackedVector3Array
 	
 	for step in prediction_steps:
 		vel += _gravity_at(pos)*dt
-		pos += vel*dt
+		pos.x += vel.x*dt
+		pos.z += vel.y*dt
 		points.append(pos)
 	
 	return points
 
 func _update_aim(screen_pos: Vector2):
 	var target: Vector3 = _mouse_to_plane(screen_pos)
-	_launch_velocity = (self.position - target)*power_scale
+	_launch_velocity = (Vector2(self.position.x - target.x, self.position.z - target.z))*power_scale
 	_draw_path(_predict_path(global_position, _launch_velocity))
 
 func _draw_path(points: PackedVector3Array)->void:

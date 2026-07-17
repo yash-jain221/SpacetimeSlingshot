@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://yoleb38xfxdo" path="res://scripts/ship.gd" id="1_q631a"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_r57db"]
-radius = 0.3
-height = 0.6
+radius = 0.2
+height = 0.4
 
 [node name="Ship" type="MeshInstance3D" unique_id=1701288930]
 mesh = SubResource("SphereMesh_r57db")

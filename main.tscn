@@ -6,6 +6,7 @@
 [ext_resource type="Shader" uid="uid://du6tsbtyxfjl2" path="res://shaders/spacetime_grid.gdshader" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://cur2lbhpcpqt8" path="res://scripts/spacetime_grid.gd" id="5_lquwl"]
 [ext_resource type="Shader" uid="uid://csjn53o8iuanc" path="res://shaders/planet.gdshader" id="6_7mycd"]
+[ext_resource type="PackedScene" uid="uid://b403kme5i2fb7" path="res://scenes/star.tscn" id="7_272bh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
 
@@ -15,6 +16,17 @@ sky_material = SubResource("ProceduralSkyMaterial_rftev")
 [sub_resource type="Environment" id="Environment_r57db"]
 background_mode = 2
 sky = SubResource("Sky_abdd0")
+glow_enabled = true
+glow_levels/3 = 0.03
+glow_levels/4 = 0.57
+glow_levels/5 = 1.02
+glow_intensity = 0.75
+glow_strength = 0.91
+glow_bloom = 0.2
+glow_hdr_threshold = 0.9
+glow_hdr_scale = 2.03
+glow_hdr_luminance_cap = 17.01
+volumetric_fog_emission_energy = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 shading_mode = 0
@@ -36,8 +48,12 @@ shader_parameter/body_masses = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 shader_parameter/well_strength = 0.05
 shader_parameter/well_softening = 1.5
 shader_parameter/max_depth = 15.0
-shader_parameter/grid_color = Color(0.2, 0.5, 1, 1)
-shader_parameter/line_sharpness = 0.04
+shader_parameter/sheet_color = Color(0.01, 0.01, 0.02, 1)
+shader_parameter/line_color = Color(0.15, 0.18, 0.28, 1)
+shader_parameter/glow_color = Color(0.3, 0.6, 1, 1)
+shader_parameter/glow_strength = 5.0
+shader_parameter/well_range = 8.0
+shader_parameter/line_sharpness = 0.02
 
 [sub_resource type="Gradient" id="Gradient_h8ms6"]
 
@@ -53,7 +69,7 @@ color_ramp = SubResource("Gradient_h8ms6")
 seamless = true
 seamless_blend_skirt = 0.765
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mycd"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_272bh"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("6_7mycd")
@@ -68,34 +84,13 @@ shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
 shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
 shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_272bh"]
+[sub_resource type="SphereMesh" id="SphereMesh_5vw27"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_7mycd")
-radius = 3.0
-height = 6.0
+material = SubResource("ShaderMaterial_272bh")
+radius = 1.0
+height = 2.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("6_7mycd")
-shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
-shader_parameter/noise_scale = 0.1
-shader_parameter/seed_offset = Vector3(0, 1, 2)
-shader_parameter/sea_level = 0.2
-shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
-shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
-shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
-shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
-shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
-shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_kek77"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_5vw27")
-radius = 3.0
-height = 6.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4c57u"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kek77"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("6_7mycd")
@@ -110,28 +105,77 @@ shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
 shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
 shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_efxa6"]
+[sub_resource type="SphereMesh" id="SphereMesh_4c57u"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_4c57u")
-radius = 3.0
-height = 6.0
+material = SubResource("ShaderMaterial_kek77")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.25
+shader_parameter/seed_offset = Vector3(2, 5, 2)
+shader_parameter/sea_level = 0.01
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_dg77c"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_efxa6")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ycdy4"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.25
+shader_parameter/seed_offset = Vector3(2, 5, 2)
+shader_parameter/sea_level = 0.01
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_w48qg"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ycdy4")
+radius = 1.0
+height = 2.0
 
 [node name="Main" type="Node3D" unique_id=1912433870]
 script = ExtResource("1_h2yge")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=165462697]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
+visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1241039109]
 environment = SubResource("Environment_r57db")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1960231580]
-transform = Transform3D(1, 0, 0, 0, 0.7032319, 0.71096057, 0, -0.71096057, 0.7032319, -5.1645308, 19.360264, 14.040287)
+transform = Transform3D(0.9997427, -0.022687338, 4.8554334e-09, 0.0027336697, 0.12046239, 0.9927143, -0.022522045, -0.9924588, 0.12049338, 0, 30, 3.6469798)
+fov = 72.34726
 
 [node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.641254, 0.4110453, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 4, 0)
+power_scale = null
 aim_line = NodePath("../AimLine")
+prediction_steps = null
 mass = 0.01
+initial_velocity = null
+radius = null
+is_goal = null
 body_type = 2
 
 [node name="AimLine" type="MeshInstance3D" parent="." unique_id=1866508016]
@@ -159,21 +203,29 @@ offset_bottom = 383.0
 text = "Retry?"
 
 [node name="SpacetimeGrid" type="MeshInstance3D" parent="." unique_id=294695057]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8280029, -0.36619186, 0.828146)
 mesh = SubResource("PlaneMesh_6iixf")
 surface_material_override/0 = SubResource("ShaderMaterial_h2yge")
 script = ExtResource("5_lquwl")
 
 [node name="Planet3" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(-0.045196407, 0.9382844, 0.34289888, -0.9372581, 0.07895322, -0.3395788, -0.34569445, -0.33673257, 0.8758463, -25.572811, 2.6374502, 0)
-mesh = SubResource("SphereMesh_272bh")
+transform = Transform3D(-0.045196407, 0.9382844, 0.34289888, -0.9372581, 0.07895322, -0.3395788, -0.34569445, -0.33673257, 0.8758463, 30, 4, 0)
+mesh = SubResource("SphereMesh_5vw27")
 mass = 500.0
 is_goal = true
 
-[node name="Planet4" parent="." unique_id=1095530171 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(-0.99591076, -0.08379161, -0.033792675, 0.08575176, -0.75883454, -0.64561486, 0.028454036, -0.64587235, 0.7629161, -6.5692463, 1.8632507, -23.153662)
-mesh = SubResource("SphereMesh_kek77")
-mass = 850.0
-
 [node name="Planet5" parent="." unique_id=235869983 instance=ExtResource("1_0xm2m")]
-transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, 15.722301, 2.585144, -0.7342663)
-mesh = SubResource("SphereMesh_efxa6")
+transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, 0, 4, 7)
+mesh = SubResource("SphereMesh_4c57u")
+
+[node name="Star" parent="." unique_id=1648864639 instance=ExtResource("7_272bh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 4, 0)
+mass = 3000.0
+
+[node name="Planet6" parent="." unique_id=97295195 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, -7, 4, -7)
+mesh = SubResource("SphereMesh_dg77c")
+
+[node name="Planet7" parent="." unique_id=1537966986 instance=ExtResource("1_0xm2m")]
+transform = Transform3D(-0.9634268, -0.25058618, -0.094981104, 0.25251448, -0.7302085, -0.63485265, 0.089728996, -0.6356165, 0.7667765, -14, 4, 7)
+mesh = SubResource("SphereMesh_w48qg")

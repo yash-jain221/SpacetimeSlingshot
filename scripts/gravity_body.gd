@@ -5,13 +5,13 @@ const G:float = 1.0
 enum BodyType {PLANET, ASTEROID, SHIP}
 
 @export var mass: float = 100.0  
-@export var initial_velocity: Vector3 = Vector3.ZERO
+@export var initial_velocity: Vector2 = Vector2.ZERO
 @export var radius: float = 1.0
 @export var is_goal: bool = false  
 @export var body_type:BodyType = BodyType.PLANET 
 
 static var full_nbody: bool = false
-var velocity: Vector3
+var velocity: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,9 +21,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var acceleration = _gravity_at(global_position)
 	velocity += acceleration * delta
-	global_position += velocity * delta
+	global_position.x += velocity.x * delta
+	global_position.z += velocity.y * delta
 	
-func _gravity_at(point: Vector3)->Vector3:
+func _gravity_at(point: Vector3)->Vector2:
 	var accelaration := Vector3.ZERO
 	for body in get_tree().get_nodes_in_group("gravity_sources"):
 		if body == self:
@@ -36,7 +37,7 @@ func _gravity_at(point: Vector3)->Vector3:
 			continue
 		accelaration += offset.normalized() * (G * body.mass/dist_sq) 
 	
-	return accelaration
+	return Vector2(accelaration.x, accelaration.z)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
