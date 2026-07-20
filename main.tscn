@@ -3,10 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://dp58dg2wlyjne" path="res://scenes/planet.tscn" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://b5q08ha4xy2g7" path="res://scripts/game.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bdf5jlkvwvbe7" path="res://scenes/ship.tscn" id="2_h2yge"]
+[ext_resource type="Resource" path="res://levels/level_01_solution.tres" id="2_kek77"]
 [ext_resource type="Shader" uid="uid://du6tsbtyxfjl2" path="res://shaders/spacetime_grid.gdshader" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://cur2lbhpcpqt8" path="res://scripts/spacetime_grid.gd" id="5_lquwl"]
 [ext_resource type="Shader" uid="uid://csjn53o8iuanc" path="res://shaders/planet.gdshader" id="6_7mycd"]
 [ext_resource type="PackedScene" uid="uid://b403kme5i2fb7" path="res://scenes/star.tscn" id="7_272bh"]
+[ext_resource type="Script" uid="uid://cjfprh7it364y" path="res://scripts/solution_maker.gd" id="9_kek77"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rftev"]
 
@@ -69,7 +71,7 @@ color_ramp = SubResource("Gradient_h8ms6")
 seamless = true
 seamless_blend_skirt = 0.765
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_272bh"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kek77"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("6_7mycd")
@@ -77,27 +79,6 @@ shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
 shader_parameter/noise_scale = 0.25
 shader_parameter/seed_offset = Vector3(0, 0, 0)
 shader_parameter/sea_level = 0.5
-shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
-shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
-shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
-shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
-shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
-shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_5vw27"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_272bh")
-radius = 1.0
-height = 2.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kek77"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("6_7mycd")
-shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
-shader_parameter/noise_scale = 0.25
-shader_parameter/seed_offset = Vector3(2, 5, 2)
-shader_parameter/sea_level = 0.01
 shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
 shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
 shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
@@ -153,8 +134,30 @@ material = SubResource("ShaderMaterial_ycdy4")
 radius = 1.0
 height = 2.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vivmo"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_7mycd")
+shader_parameter/noise_tex = SubResource("NoiseTexture3D_h8ms6")
+shader_parameter/noise_scale = 0.25
+shader_parameter/seed_offset = Vector3(2, 5, 2)
+shader_parameter/sea_level = 0.01
+shader_parameter/deep_water = Color(0.02, 0.1, 0.35, 1)
+shader_parameter/shallow_water = Color(0.1, 0.4, 0.7, 1)
+shader_parameter/sand = Color(0.8, 0.75, 0.5, 1)
+shader_parameter/grass = Color(0.2, 0.5, 0.15, 1)
+shader_parameter/rock = Color(0.4, 0.35, 0.3, 1)
+shader_parameter/snow = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_2cqfq"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_vivmo")
+radius = 1.0
+height = 2.0
+
 [node name="Main" type="Node3D" unique_id=1912433870]
 script = ExtResource("1_h2yge")
+solution = ExtResource("2_kek77")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=165462697]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
@@ -169,13 +172,8 @@ fov = 72.34726
 
 [node name="Ship" parent="." unique_id=1701288930 node_paths=PackedStringArray("aim_line") instance=ExtResource("2_h2yge")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 4, 0)
-power_scale = null
 aim_line = NodePath("../AimLine")
-prediction_steps = null
 mass = 0.01
-initial_velocity = null
-radius = null
-is_goal = null
 body_type = 2
 
 [node name="AimLine" type="MeshInstance3D" parent="." unique_id=1866508016]
@@ -190,17 +188,37 @@ offset_bottom = 48.0
 text = "Full N-Body (Chaos)"
 
 [node name="Banner" type="Label" parent="HUD" unique_id=1355017339]
-offset_left = 499.0
-offset_top = 258.0
-offset_right = 685.0
-offset_bottom = 329.0
+offset_left = 520.0
+offset_top = 266.0
+offset_right = 706.0
+offset_bottom = 337.0
 
 [node name="RetryButton" type="Button" parent="HUD" unique_id=1943831592]
-offset_left = 550.0
-offset_top = 341.0
-offset_right = 638.0
-offset_bottom = 383.0
+offset_left = 558.0
+offset_top = 345.0
+offset_right = 646.0
+offset_bottom = 387.0
 text = "Retry?"
+
+[node name="ReplayButton" type="Button" parent="HUD" unique_id=2020490921]
+offset_left = 524.0
+offset_top = 349.0
+offset_right = 591.0
+offset_bottom = 380.0
+text = "Replay?"
+
+[node name="NextLevelButton" type="Button" parent="HUD" unique_id=65914706]
+offset_left = 610.0
+offset_top = 345.0
+offset_right = 700.0
+offset_bottom = 382.0
+text = "Next Level"
+
+[node name="Counter" type="Label" parent="HUD" unique_id=928996623]
+offset_left = 1016.0
+offset_top = 20.0
+offset_right = 1143.0
+offset_bottom = 81.0
 
 [node name="SpacetimeGrid" type="MeshInstance3D" parent="." unique_id=294695057]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8280029, -0.36619186, 0.828146)
@@ -210,13 +228,13 @@ script = ExtResource("5_lquwl")
 
 [node name="Planet3" parent="." unique_id=710599271 instance=ExtResource("1_0xm2m")]
 transform = Transform3D(-0.045196407, 0.9382844, 0.34289888, -0.9372581, 0.07895322, -0.3395788, -0.34569445, -0.33673257, 0.8758463, 30, 4, 0)
-mesh = SubResource("SphereMesh_5vw27")
+mesh = SubResource("SphereMesh_4c57u")
 mass = 500.0
 is_goal = true
 
 [node name="Planet5" parent="." unique_id=235869983 instance=ExtResource("1_0xm2m")]
 transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, 0, 4, 7)
-mesh = SubResource("SphereMesh_4c57u")
+mesh = SubResource("SphereMesh_dg77c")
 
 [node name="Star" parent="." unique_id=1648864639 instance=ExtResource("7_272bh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 4, 0)
@@ -224,8 +242,12 @@ mass = 3000.0
 
 [node name="Planet6" parent="." unique_id=97295195 instance=ExtResource("1_0xm2m")]
 transform = Transform3D(0.13522793, -0.9296849, -0.3426403, 0.93053424, 0.23794666, -0.27837113, 0.3403272, -0.28119466, 0.89727914, -7, 4, -7)
-mesh = SubResource("SphereMesh_dg77c")
+mesh = SubResource("SphereMesh_w48qg")
 
 [node name="Planet7" parent="." unique_id=1537966986 instance=ExtResource("1_0xm2m")]
 transform = Transform3D(-0.9634268, -0.25058618, -0.094981104, 0.25251448, -0.7302085, -0.63485265, 0.089728996, -0.6356165, 0.7667765, -14, 4, 7)
-mesh = SubResource("SphereMesh_w48qg")
+mesh = SubResource("SphereMesh_2cqfq")
+
+[node name="SolutionMaker" type="Node" parent="." unique_id=2135927890 node_paths=PackedStringArray("ship")]
+script = ExtResource("9_kek77")
+ship = NodePath("../Ship")
